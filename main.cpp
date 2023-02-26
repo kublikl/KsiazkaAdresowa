@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -15,7 +16,7 @@ struct Adresat
     string imie = "", nazwisko = "", numerTelefonu = "", email = "", adres = "";
 };
 
-int odczytywanieDanychZPlikuTekstowego(vector <Adresat> &adresaci, int iloscOsob)
+void odczytywanieDanychZPlikuTekstowego(vector <Adresat> &adresaci)
 {
 
     Adresat jedenAdresat;
@@ -25,9 +26,10 @@ int odczytywanieDanychZPlikuTekstowego(vector <Adresat> &adresaci, int iloscOsob
     std::fstream plik;
     plik.open("KsiazkaAdresowa.txt", ios::in);
 
+
     if(plik.good() == false)
     {
-        cout << "Plik nie istnieje";
+        cout << "Nie znaleziono pliku .txt, utworze go podczas dodawania adresata" << endl <<"Nacisnij enter, aby przejsc dalej";
         getchar();
     }
 
@@ -46,10 +48,8 @@ int odczytywanieDanychZPlikuTekstowego(vector <Adresat> &adresaci, int iloscOsob
         jedenAdresat.email = bufor[4];
         jedenAdresat.adres = bufor[5];
         adresaci.push_back(jedenAdresat);
-        iloscOsob++;
     }
     plik.close();
-    return iloscOsob;
 }
 
 string wczytajLinie()
@@ -59,6 +59,7 @@ string wczytajLinie()
     getline(cin, wejscie);
     return wejscie;
 }
+
 char wczytajZnak()
 {
     string wejscie = "";
@@ -81,19 +82,32 @@ char wczytajZnak()
 
 void zapisywanieDanychDoPlikuTekstowego(vector <Adresat> &adresaci)
 {
-    fstream plik;
+    ofstream plik;
     plik.open("KsiazkaAdresowa.txt", ios::out | ios::trunc); // ios::trunc powoduje wyczyszczenie zawartości pliku
 
     if (plik.good() == true)
     {
         for (vector <Adresat>::iterator itr = adresaci.begin(); itr != adresaci.end(); itr++)
         {
-        plik << endl << itr -> id << '|';
-        plik << itr -> imie << '|';
-        plik << itr -> nazwisko << '|';
-        plik << itr -> numerTelefonu << '|';
-        plik << itr -> email << '|';
-        plik << itr -> adres << '|';
+
+            if (itr == adresaci.begin())
+            {
+                plik << itr -> id << '|';
+                plik << itr -> imie << '|';
+                plik << itr -> nazwisko << '|';
+                plik << itr -> numerTelefonu << '|';
+                plik << itr -> email << '|';
+                plik << itr -> adres << '|';
+            }
+            else
+            {
+                plik << endl << itr -> id << '|';
+                plik << itr -> imie << '|';
+                plik << itr -> nazwisko << '|';
+                plik << itr -> numerTelefonu << '|';
+                plik << itr -> email << '|';
+                plik << itr -> adres << '|';
+            }
         }
         plik.close();
     }
@@ -104,7 +118,7 @@ void zapisywanieDanychDoPlikuTekstowego(vector <Adresat> &adresaci)
     }
 }
 
-int dodajOsobe(vector <Adresat> &adresaci, int &iloscOsob)
+int dodajOsobe(vector <Adresat> &adresaci)
 {
     Adresat nowyAdresat;
     string imie, nazwisko, numerTelefonu, email, adres;
@@ -130,7 +144,14 @@ int dodajOsobe(vector <Adresat> &adresaci, int &iloscOsob)
     cout << email << endl;
     cout << adres << endl;
 
-    nowyAdresat.id = iloscOsob + 1;
+    if (adresaci.empty() == true)
+    {
+        nowyAdresat.id = 1;
+    }
+    else
+    {
+        nowyAdresat.id = adresaci.back().id + 1;
+    }
     nowyAdresat.imie = imie;
     nowyAdresat.nazwisko = nazwisko;
     nowyAdresat.numerTelefonu = numerTelefonu;
@@ -142,18 +163,17 @@ int dodajOsobe(vector <Adresat> &adresaci, int &iloscOsob)
     zapisywanieDanychDoPlikuTekstowego(adresaci);
     system("pause");
 
-    return ++iloscOsob;
 
 }
 
-void wyszukajPoImieniu(vector <Adresat> &adresaci)
+void wyszukajPoImieniu(vector <Adresat> adresaci)
 {
     string imie;
     bool czyIstniejeKontakt = false;
     cout << "Podaj imie wyszukiwanego kontaktu: ";
     imie = wczytajLinie();
 
-    for (int i = 0; i < adresaci.size(); i++)
+    for (unsigned int i = 0; i < adresaci.size(); i++)
     {
         if (adresaci[i].imie == imie)
         {
@@ -176,14 +196,14 @@ void wyszukajPoImieniu(vector <Adresat> &adresaci)
     system("pause");
 }
 
-void wyszukajPoNazwisku(vector <Adresat> &adresaci)
+void wyszukajPoNazwisku(vector <Adresat> adresaci)
 {
     string nazwisko;
     bool czyIstniejeKontakt = false;
     cout << "Podaj nazwisko wyszukiwanego kontaktu: ";
     nazwisko = wczytajLinie();
 
-    for (int i = 0; i < adresaci.size(); i++)
+    for (unsigned int i = 0; i < adresaci.size(); i++)
     {
         if (adresaci[i].nazwisko == nazwisko)
         {
@@ -197,17 +217,17 @@ void wyszukajPoNazwisku(vector <Adresat> &adresaci)
             czyIstniejeKontakt = true;
         }
     }
-        if (czyIstniejeKontakt == false)
-        {
-            cout << "Nie znaleziono w dokumencie .txt" << endl;
-        }
+    if (czyIstniejeKontakt == false)
+    {
+        cout << "Nie znaleziono w dokumencie .txt" << endl;
+    }
 
-        system("pause");
+    system("pause");
 }
 
-void wyswietlWszystkichAdresatow(vector <Adresat> &adresaci, int iloscOsob)
+void wyswietlWszystkichAdresatow(vector <Adresat> adresaci)
 {
-    for (int i = 0; i < adresaci.size(); i++)
+    for (unsigned int i = 0; i < adresaci.size(); i++)
     {
         cout << "Id:                      " << adresaci[i].id << endl;
         cout << "Imie:                    " << adresaci[i].imie << endl;
@@ -225,12 +245,13 @@ void usunAdresata(vector <Adresat> &adresaci)
     char wybor;
     cout << "Podaj ID adresata do usuniecia: ";
     cin >> idUsuwanegoAdresata;
+    bool czyIstniejeAdresat = false;
 
     for (vector<Adresat>::iterator itr = adresaci.begin(); itr != adresaci.end(); itr++)
     {
         if (itr -> id == idUsuwanegoAdresata)
         {
-
+            czyIstniejeAdresat = true;
             cout << "Czy na pewno chcesz usunac uzytkownika o numerze ID " << idUsuwanegoAdresata << "? Jesli tak wpisz: t " << endl;
             wybor =  wczytajZnak();
 
@@ -238,18 +259,24 @@ void usunAdresata(vector <Adresat> &adresaci)
             {
                 adresaci.erase(itr);
                 cout << "Adresat zostal usuniety." << endl;
-                return;
+                zapisywanieDanychDoPlikuTekstowego(adresaci);
+                break;
             }
             else
             {
-                return;
+                cout << "Wybrany adresat NIE zostal usuniety";
+                break;
             }
 
         }
 
     }
+    if (czyIstniejeAdresat == false)
+    {
+        cout << endl << "Nie ma takiego adresata w ksiazce adresowej" << endl << endl;
+    }
 
-         cout << "Nie znaleziono adresata o podanym ID." << endl;
+    system("pause");
 }
 
 void edytujKontakt(vector<Adresat> &adresaci)
@@ -291,6 +318,7 @@ void edytujKontakt(vector<Adresat> &adresaci)
                 noweDane = wczytajLinie();
                 itr -> imie = noweDane;
                 cout << itr -> imie;
+                zapisywanieDanychDoPlikuTekstowego(adresaci);
                 break;
 
             case '2':
@@ -298,6 +326,7 @@ void edytujKontakt(vector<Adresat> &adresaci)
                 cin.sync();
                 noweDane = wczytajLinie();
                 itr -> nazwisko = noweDane;
+                zapisywanieDanychDoPlikuTekstowego(adresaci);
                 break;
 
             case '3':
@@ -305,6 +334,7 @@ void edytujKontakt(vector<Adresat> &adresaci)
                 cin.sync();
                 noweDane = wczytajLinie();
                 itr -> numerTelefonu = noweDane;
+                zapisywanieDanychDoPlikuTekstowego(adresaci);
                 break;
 
             case '4':
@@ -312,6 +342,7 @@ void edytujKontakt(vector<Adresat> &adresaci)
                 cin.sync();
                 noweDane = wczytajLinie();
                 itr -> email = noweDane;
+                zapisywanieDanychDoPlikuTekstowego(adresaci);
                 break;
 
             case '5':
@@ -319,10 +350,15 @@ void edytujKontakt(vector<Adresat> &adresaci)
                 cin.sync();
                 noweDane = wczytajLinie();
                 itr -> email = noweDane;
+                zapisywanieDanychDoPlikuTekstowego(adresaci);
                 break;
 
             case '6':
                 return;
+                break;
+
+            default:
+                cout << endl << "Nie ma takiej opcji w menu! Powrot do menu glownego." << endl << endl;
                 break;
             }
         }
@@ -333,8 +369,7 @@ int main()
 {
 
     vector <Adresat> adresaci;
-    int iloscOsob = 0;
-    iloscOsob = odczytywanieDanychZPlikuTekstowego(adresaci, iloscOsob);
+    odczytywanieDanychZPlikuTekstowego(adresaci);
     char wybor;
 
     while (true)
@@ -354,7 +389,7 @@ int main()
         switch(wybor)
         {
         case '1':
-            iloscOsob = dodajOsobe(adresaci, iloscOsob);
+            dodajOsobe(adresaci);
             break;
         case '2':
             wyszukajPoImieniu(adresaci);
@@ -363,15 +398,13 @@ int main()
             wyszukajPoNazwisku(adresaci);
             break;
         case '4':
-            wyswietlWszystkichAdresatow(adresaci, iloscOsob);
+            wyswietlWszystkichAdresatow(adresaci);
             break;
         case '5':
             usunAdresata(adresaci);
-            zapisywanieDanychDoPlikuTekstowego(adresaci);
             break;
         case '6':
             edytujKontakt(adresaci);
-            zapisywanieDanychDoPlikuTekstowego(adresaci);
             break;
         case '9':
             return (0);
@@ -379,8 +412,5 @@ int main()
         }
     }
 
-     return 0;
+    return 0;
 }
-
-
-
