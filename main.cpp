@@ -106,7 +106,7 @@ void rejestracjaUzytkownika(vector <Uzytkownik> &uzytkownicy)
     {
         while(itr -> nazwa == nazwaUzytkownika)
         {
-            cout << "Taki uztkownik juz istnieje. Wpisz inna nazwe uzytkownika: ";
+            cout << "Taki uzytkownik juz istnieje. Wpisz inna nazwe uzytkownika: ";
             cin >> nazwaUzytkownika;
         }
     }
@@ -114,9 +114,9 @@ void rejestracjaUzytkownika(vector <Uzytkownik> &uzytkownicy)
     cout << "Podaj haslo: ";
     cin >> hasloUzytkownika;
 
-    if (uzytkownicy.empty() == true)  // jezeli ksiazka adresowa jest pusta
+    if (uzytkownicy.empty() == true)
     {
-        Osoba.idUzytkownika = 1;           // to nowy adresat ma id=1
+        Osoba.idUzytkownika = 1;
     }
     else
     {
@@ -215,50 +215,6 @@ char wczytajZnak()
     }
     return znak;
 }
-
-/*
-void zapisywanieDanychDoPlikuTekstowego(vector <Adresat> &adresaci)
-{
-     //string liniaZDanymiAdresata = "";
-
-    ofstream plik;
-    plik.open("KsiazkaAdresowa.txt", ios::out | ios::trunc); // ios::trunc powoduje wyczyszczenie zawartości pliku
-
-    if (plik.good() == true)
-    {
-        for (vector <Adresat>::iterator itr = adresaci.begin(); itr != adresaci.end(); itr++)
-        {
-
-            if (itr == adresaci.begin())
-            {
-                plik << itr -> id << '|';
-                plik << itr -> idUzytkownika << '|';
-                plik << itr -> imie << '|';
-                plik << itr -> nazwisko << '|';
-                plik << itr -> numerTelefonu << '|';
-                plik << itr -> email << '|';
-                plik << itr -> adres << '|';
-            }
-            else
-            {
-                plik << endl << itr -> id << '|';
-                plik << itr -> idUzytkownika << '|';
-                plik << itr -> imie << '|';
-                plik << itr -> nazwisko << '|';
-                plik << itr -> numerTelefonu << '|';
-                plik << itr -> email << '|';
-                plik << itr -> adres << '|';
-            }
-        }
-        plik.close();
-    }
-    else
-    {
-        cout << "Nie udalo sie otworzyc pliku i zapisac do niego danych." << endl;
-        system("pause");
-    }
-}
-*/
 
 void usunLinieZPliku (int idZalogowanegoUzytkownika)
 {
@@ -687,7 +643,7 @@ void zapiszDaneUzytkownikowDoPliku (vector <Uzytkownik> &uzytkownicy)
             liniaZDanymiUzytkownika = "";
         }
         plik.close();
-        cout << "Dane zostaly zapisne." << endl;
+        cout << "Dane zostaly zapisane." << endl;
         system("pause");
     }
     else
@@ -795,7 +751,6 @@ int main()
             case '8':
                 idZalogowanegoUzytkownika = 0;
                 break;
-
             case '9':
                 return (0);
                 break;
